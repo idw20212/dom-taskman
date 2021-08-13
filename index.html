@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manipulação do DOM</title>
+    <script>
+      /**
+       * Um vetor com a lista das tarefas.
+       */
+      var tarefas = [
+          "Tomar água",
+          "Escrever introdução do TCC",
+          "Concluir tarefa de IDW"
+      ];
+
+      /**
+       * Método que apresenta a lista das tarefas.
+       */
+      function apresentarTarefas() {
+        var ul = document.getElementById('ulTarefas');
+        for (var tarefa of tarefas) {
+          var li = document.createElement('li');
+          li.innerHTML = tarefa;
+          ul.appendChild(li);
+        }
+      }
+
+      /**
+       * Tratador do evento DOMContentLoaded para o document.
+       */
+      function documentLoad() {
+        apresentarTarefas();
+      }
+
+      /**
+       * Define o tratador do evento DOMContentLoaded do document.
+       */
+      document.addEventListener('DOMContentLoaded', documentLoad);
+    </script>
+  </head>
+
+  <body>
+    <div id="app">
+      <h1 id="title">Gerenciador de tarefas</h1>
+      <h4 id="subtitle">Demonstração de recursos de manipulação do DOM com JavaScript</h4>
+      <hr>
+      <ul id="ulTarefas">
+      </ul>
+    </div>
+  </body>
+
+</html>
