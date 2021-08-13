@@ -33,25 +33,45 @@
 
       /**
        * Tratador do evento de click do botão que
-       * marca uma tarefa como concluída.
+       * marca uma tarefa como concluída ou desmarca como concluída
+       * de acordo com a situação da tarefa relacionada.
+       * 
+       * O código opera da seguinte forma:
+       * - obtém o valor do atributo `data-tarefas-id` do botão
+       * - encontra a tarefa correspondente na lista de tarefas
+       * - alterna o valor do atributo `estahConcluida`
+       * - chama o método `apresentarTarefas()` para atualizar a lista das tarefas
        */
        function buttonConcluirTarefaClick() {
         var id = this.getAttribute('data-tarefas-id');
         var tarefa = tarefas.find(t => t.id == id);
-        tarefa.estahConcluida = true;
+        tarefa.estahConcluida = !tarefa.estahConcluida;
         apresentarTarefas();
       }      
 
       /**
-       * Método que cria o botão de marcar a tarefa como concluída.
+       * Método que cria o botão de marcar a tarefa como concluída ou desfazer
+       * desfazer a conclusão, de acordo com a situação da tarefa
+       * informada como parâmetro `tarefa`.
+       * 
+       * O código opera da seguinte forma:
+       * - cria um elemento `button`
+       * - define o valor do atributo `innerHTML` de acordo com a situação da tarefa
+       * - define o valor do atributo `data-tarefas-id` do botão como o valor do atributo `id` da `tarefa`
+       * - adiciona o tratador do evento de click no botão (`buttonConcluirTarefaClick`)
+       * - retorna elemento `button`.
        */
        function createButtonConcluir(tarefa) {
         var btnConcluir = document.createElement('button');
-        btnConcluir.innerHTML = 'Concluir';
+        if (tarefa.estahConcluida) {
+          btnConcluir.innerHTML = 'Desfazer concluir';
+        } else {
+          btnConcluir.innerHTML = 'Concluída';
+        }
         btnConcluir.setAttribute('data-tarefas-id', tarefa.id);
         btnConcluir.addEventListener('click', buttonConcluirTarefaClick);
         return btnConcluir;
-      }      
+      } 
 
       /**
        * Método que apresenta a lista das tarefas.
