@@ -27,15 +27,44 @@
           id: 3,
           titulo: "Concluir tarefa de IDW",
           dataDeTermino: new Date(2021, 7, 30),
-          estahConcluida: true,
+          estahConcluida: false,
         },
       ];
+
+      /**
+       * Tratador do evento de click do botão que
+       * marca uma tarefa como concluída.
+       */
+       function buttonConcluirTarefaClick() {
+        var id = this.getAttribute('data-tarefas-id');
+        var tarefa = tarefas.find(t => t.id == id);
+        tarefa.estahConcluida = !tarefa.estahConcluida;
+        apresentarTarefas();
+      }      
+
+      /**
+       * Método que cria o botão de marcar a tarefa como concluída.
+       */
+       function createButtonConcluir(tarefa) {
+        var btnConcluir = document.createElement('button');
+        btnConcluir.innerHTML = 'Concluída';
+        btnConcluir.setAttribute('data-tarefas-id', tarefa.id);
+        btnConcluir.addEventListener('click', buttonConcluirTarefaClick);
+        return btnConcluir;
+      }      
 
       /**
        * Método que apresenta a lista das tarefas.
        */
        function apresentarTarefas() {
+        var table = document.getElementById('tableTarefas');
         var tbody = document.getElementById('tbodyTarefas');
+        if (tbody) {
+          tbody.remove();
+        }
+        tbody = document.createElement('tbody');
+        tbody.setAttribute('id', 'tbodyTarefas');
+        table.appendChild(tbody);
         for (var tarefa of tarefas) {
           var tr = document.createElement('tr');
           tr.setAttribute('id', `rowTarefas-${tarefa.id}`);
@@ -55,9 +84,12 @@
           var tdTermino = document.createElement('td');
           tdTermino.innerHTML = tarefa.dataDeTermino;
           var tdConcluir = document.createElement('td');
+          btnConcluir = createButtonConcluir(tarefa);
+          tdConcluir.appendChild(btnConcluir);
           tr.appendChild(tdId);
           tr.appendChild(tdTitulo);
           tr.appendChild(tdTermino);
+          tr.appendChild(tdConcluir);
           tbody.appendChild(tr);
         }
       }
@@ -87,6 +119,7 @@
             <th>Id</th>
             <th>Tarefa</th>
             <th>Conclusão</th>
+            <th>Concluir</th>
           </tr>
         </thead>
         <tbody id="tbodyTarefas">
