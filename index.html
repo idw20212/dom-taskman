@@ -234,15 +234,69 @@
       }
 
       /**
+       * Método que cria a interface do app.
+       */
+      function createApp() {
+        var app = document.getElementById('app');
+
+        var hTitle = document.createElement('h1');
+        hTitle.innerHTML = 'Gerenciador de tarefas';
+        app.appendChild(hTitle);
+
+        var hSubtitle = document.createElement('h4');
+        hSubtitle.innerHTML = 'Demonstração de recursos de manipulação do DOM com JavaScript';
+        app.appendChild(hSubtitle);
+
+        var buttonCadastrarTarefa = document.createElement('button');
+        buttonCadastrarTarefa.innerText = 'Cadastrar tarefa';
+        buttonCadastrarTarefa.addEventListener('click', buttonCadastrarTarefaClick);
+        app.appendChild(buttonCadastrarTarefa);
+      
+        app.appendChild(document.createElement('hr'));
+
+        var tableTarefas = document.createElement('table');
+        tableTarefas.setAttribute('id', 'tableTarefas');
+        tableTarefas.setAttribute('border', 1);
+
+        var thead = document.createElement('thead');
+
+        var tr = document.createElement('tr');
+
+        var thId = document.createElement('th');
+        thId.innerHTML = 'Id';
+        tr.appendChild(thId);
+
+        var thTitulo = document.createElement('th');
+        thTitulo.innerHTML = 'Tarefa';
+        tr.appendChild(thTitulo);
+
+        var thDataDeTermino = document.createElement('th');
+        thDataDeTermino.innerHTML = 'Data de término';
+        tr.appendChild(thDataDeTermino);
+
+        var thConcluir = document.createElement('th');
+        thConcluir.innerHTML = 'Concluir';
+        tr.appendChild(thConcluir);
+
+        thead.appendChild(tr);
+        tableTarefas.appendChild(thead);
+
+        var tbody = document.createElement('tbody');
+        tbody.setAttribute('id', 'tbodyTarefas');
+        tableTarefas.appendChild(tbody);
+
+        app.appendChild(tableTarefas);
+      }
+
+      /**
        * Tratador do evento DOMContentLoaded para o document.
        */
       function documentLoad() {
         salvarTarefa("Tomar água", new Date(2021, 7, 14), false);
         salvarTarefa("Escrever introdução do TCC", new Date(2021, 7, 20), false);
         salvarTarefa("Concluir tarefa de IDW", new Date(2021, 7, 30), false);
+        createApp();
         apresentarTarefas();
-        var buttonCadastrarTarefa = document.querySelector('#buttonCadastrarTarefa');
-        buttonCadastrarTarefa.addEventListener('click', buttonCadastrarTarefaClick);
       }
 
       /**
@@ -254,22 +308,6 @@
 
   <body>
     <div id="app">
-      <h1 id="title">Gerenciador de tarefas</h1>
-      <h4 id="subtitle">Demonstração de recursos de manipulação do DOM com JavaScript</h4>
-      <button id="buttonCadastrarTarefa">Cadastrar tarefa</button>
-      <hr>
-      <table id="tableTarefas" border="1">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Tarefa</th>
-            <th>Conclusão</th>
-            <th>Concluir</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyTarefas">
-        </tbody>
-      </table>
     </div>
   </body>
 
