@@ -8,28 +8,45 @@
     <title>Manipulação do DOM</title>
     <script>
       /**
+       * Classe que representa as informações de uma tarefa, contendo:
+       * - id (identificador)
+       * - titulo
+       * - data de término
+       * - indicação de tarefa concluída
+       */
+      class Tarefa {
+        /**
+         * Construtor da classe.
+         */
+        constructor(id, titulo, dataDeTermino, estahConcluida) {
+          this.id = id;
+          this.titulo = titulo;
+          this.dataDeTermino = dataDeTermino;
+          this.estahConcluida = estahConcluida;
+        }
+
+        /**
+         * Método que alterna o valor do atributo `estahConcluida`.
+         */
+        alternarSituacao() {
+          this.estahConcluida = !this.estahConcluida;
+        }
+      }
+
+      /**
        * Um vetor com a lista das tarefas.
        */
-      var tarefas = [
-        {
-          id: 1,
-          titulo: "Tomar água",
-          dataDeTermino: new Date(2021, 7, 14),
-          estahConcluida: false,
-        },
-        {
-          id: 2,
-          titulo: "Escrever introdução do TCC",
-          dataDeTermino: new Date(2021, 7, 20),
-          estahConcluida: false,
-        },
-        {
-          id: 3,
-          titulo: "Concluir tarefa de IDW",
-          dataDeTermino: new Date(2021, 7, 30),
-          estahConcluida: false,
-        },
-      ];
+      var tarefas = [];
+
+      /**
+       * Método que cria uma instância de `Tarefa` com base nos parâmetros e 
+       * adiciona no vetor `tarefas`. Este método não atualiza a interface
+       * do aplicativo.
+       */
+      function salvarTarefa(titulo, dataDeTermino, estahConcluida) {
+        var id = tarefas.length + 1;
+        tarefas.push(new Tarefa(id, titulo, dataDeTermino, estahConcluida));
+      }
 
       /**
        * Tratador do evento de click do botão que
@@ -45,7 +62,7 @@
       function buttonConcluirTarefaClick() {
         var id = this.getAttribute('data-tarefas-id');
         var tarefa = tarefas.find(t => t.id == id);
-        tarefa.estahConcluida = !tarefa.estahConcluida;
+        tarefa.alternarSituacao();
         apresentarTarefas();
       }
 
@@ -168,12 +185,7 @@
           if (titulo == '') {
             input.focus();
           } else {
-            windowCadastrarTarefa.opener.tarefas.push({
-              id: windowCadastrarTarefa.opener.tarefas.length + 1,
-              titulo: titulo,
-              dataDeTermino: new Date(2021, 7, 14),
-              estahConcluida: false
-            });
+            windowCadastrarTarefa.opener.salvarTarefa(titulo, new Date(2021, 7, 14), false);
             windowCadastrarTarefa.opener.apresentarTarefas();
             windowCadastrarTarefa.close();
           }
@@ -225,6 +237,9 @@
        * Tratador do evento DOMContentLoaded para o document.
        */
       function documentLoad() {
+        salvarTarefa("Tomar água", new Date(2021, 7, 14), false);
+        salvarTarefa("Escrever introdução do TCC", new Date(2021, 7, 20), false);
+        salvarTarefa("Concluir tarefa de IDW", new Date(2021, 7, 30), false);
         apresentarTarefas();
         var buttonCadastrarTarefa = document.querySelector('#buttonCadastrarTarefa');
         buttonCadastrarTarefa.addEventListener('click', buttonCadastrarTarefaClick);
