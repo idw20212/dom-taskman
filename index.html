@@ -38,7 +38,7 @@
        function buttonConcluirTarefaClick() {
         var id = this.getAttribute('data-tarefas-id');
         var tarefa = tarefas.find(t => t.id == id);
-        tarefa.estahConcluida = !tarefa.estahConcluida;
+        tarefa.estahConcluida = true;
         apresentarTarefas();
       }      
 
@@ -47,7 +47,7 @@
        */
        function createButtonConcluir(tarefa) {
         var btnConcluir = document.createElement('button');
-        btnConcluir.innerHTML = 'Concluída';
+        btnConcluir.innerHTML = 'Concluir';
         btnConcluir.setAttribute('data-tarefas-id', tarefa.id);
         btnConcluir.addEventListener('click', buttonConcluirTarefaClick);
         return btnConcluir;
