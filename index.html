@@ -34,18 +34,31 @@
       /**
        * Método que apresenta a lista das tarefas.
        */
-      function apresentarTarefas() {
-        var ul = document.getElementById('ulTarefas');
+       function apresentarTarefas() {
+        var tbody = document.getElementById('tbodyTarefas');
         for (var tarefa of tarefas) {
-          var li = document.createElement('li');
+          var tr = document.createElement('tr');
+          tr.setAttribute('id', `rowTarefas-${tarefa.id}`);
           if (tarefa.estahConcluida) {
-            var strike = document.createElement('strike');
-            strike.innerHTML = tarefa.titulo;
-            li.appendChild(strike);
-          } else {
-            li.innerHTML = tarefa.titulo;
+            tr.style.backgroundColor = 'lightgreen';
           }
-          ul.appendChild(li);
+          var tdId = document.createElement('td');
+          tdId.innerHTML = tarefa.id;
+          var tdTitulo = document.createElement('td');
+          if (tarefa.estahConcluida) {
+            var stTitulo = document.createElement('strike');
+            stTitulo.innerHTML = tarefa.titulo;
+            tdTitulo.appendChild(stTitulo);
+          } else {
+            tdTitulo.innerHTML = tarefa.titulo;
+          }
+          var tdTermino = document.createElement('td');
+          tdTermino.innerHTML = tarefa.dataDeTermino;
+          var tdConcluir = document.createElement('td');
+          tr.appendChild(tdId);
+          tr.appendChild(tdTitulo);
+          tr.appendChild(tdTermino);
+          tbody.appendChild(tr);
         }
       }
 
@@ -68,8 +81,17 @@
       <h1 id="title">Gerenciador de tarefas</h1>
       <h4 id="subtitle">Demonstração de recursos de manipulação do DOM com JavaScript</h4>
       <hr>
-      <ul id="ulTarefas">
-      </ul>
+      <table id="tableTarefas" border="1">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Tarefa</th>
+            <th>Conclusão</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyTarefas">
+        </tbody>
+      </table>
     </div>
   </body>
 
