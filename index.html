@@ -10,7 +10,7 @@
       /**
        * Um vetor com a lista das tarefas.
        */
-       var tarefas = [
+      var tarefas = [
         {
           id: 1,
           titulo: "Tomar água",
@@ -42,12 +42,12 @@
        * - alterna o valor do atributo `estahConcluida`
        * - chama o método `apresentarTarefas()` para atualizar a lista das tarefas
        */
-       function buttonConcluirTarefaClick() {
+      function buttonConcluirTarefaClick() {
         var id = this.getAttribute('data-tarefas-id');
         var tarefa = tarefas.find(t => t.id == id);
         tarefa.estahConcluida = !tarefa.estahConcluida;
         apresentarTarefas();
-      }      
+      }
 
       /**
        * Método que cria o botão de marcar a tarefa como concluída ou desfazer
@@ -61,22 +61,42 @@
        * - adiciona o tratador do evento de click no botão (`buttonConcluirTarefaClick`)
        * - retorna elemento `button`.
        */
-       function createButtonConcluir(tarefa) {
+      function createButtonConcluir(tarefa) {
         var btnConcluir = document.createElement('button');
         if (tarefa.estahConcluida) {
           btnConcluir.innerHTML = 'Desfazer concluir';
         } else {
-          btnConcluir.innerHTML = 'Concluída';
+          btnConcluir.innerHTML = 'Concluir';
         }
         btnConcluir.setAttribute('data-tarefas-id', tarefa.id);
         btnConcluir.addEventListener('click', buttonConcluirTarefaClick);
         return btnConcluir;
-      } 
+      }
 
       /**
-       * Método que apresenta a lista das tarefas.
+       * Método que apresenta a lista das tarefas na forma de uma tabela.
+       * 
+       * O código opera da seguinte forma:
+       * - obtém o elemento table com id `tableTarefas`
+       * - obtém o elemento tbody com id `tbodyTarefas`
+       * - se o tbody existir, remove-o do DOM para que a tabela inicie vazia
+       * - cria o elemento tbody com id `tbodyTarefas`
+       * - insere o tbody nos filhos do table
+       * - para cada tarefa da lista:
+       *  - cria um elemento tr para a linha da tarefa
+       *  - se a tarefa estiver concluída, altera o valor da propriedade `backgroundColor` do estilo um tom de verde claro
+       *  - cria um elemento td para o id da tarefa
+       *  - altera o valor do atributo `innerHTML` para o valor do atributo `id` da tarefa
+       *  - cria um elemento td para o título da tarefa
+       *  - se a tarefa estivar concluída, apresenta o título tachado (com a utilização do elemento strike)
+       *  - define o valor do atributo `innerHTML` do td para o valor do atributo `titulo` da tarefa
+       *  - cria um elemento td para a data de conclusão (término) da tarefa
+       *  - define o valor do atributo `innerHTML` do td para o valor do atributo `dataDeTermino` da tarefa
+       *  - cria um elemento td para o botão de concluir ou desmarcar como concluída
+       *  - adiciona o td do id no tr da linha da tarefa e faz o mesmo com os demais elementos td
+       *  - adiciona o tr da linha da tarefa no elemento tbody
        */
-       function apresentarTarefas() {
+      function apresentarTarefas() {
         var table = document.getElementById('tableTarefas');
         var tbody = document.getElementById('tbodyTarefas');
         if (tbody) {
@@ -115,10 +135,99 @@
       }
 
       /**
+       * Referência para o objeto window do formulário de cadastrar tarefa.
+       */
+      var windowCadastrarTarefa;
+
+      /**
+       * Método que cria a janela com o formulário de cadastrar tarefa.
+       * 
+       * O código opera da seguinte forma:
+       * - abre a janela
+       * - se o documento da janela tiver filhos, remove o primeiro (para deixar o documento vazio)
+       * - cria um elemento form
+       * - adiciona um tratador para o evento `submit` do form, que obém o valor do campo input e o utiliza para criar um novo objeto (tarefa) na lista das tarefas. Depois, atualiza a lista das tarefas na outra janela.
+       * - cria um elemento h1 com o título da página
+       * - cria um elemento div para conter o campo título
+       * - cria um elemento input para o campo título
+       * - cria um elemento div para conter uma mensagem de aviso de validação
+       * - cria um elemento button para acionar o evento submit do form (salvar)
+       * - adiciona os elementos no DOM do documento da janela
+       */
+      function createCadastrarTarefaWindow() {
+        windowCadastrarTarefa = window.open('', 'windowCadastrarTarefa', 'location=0,menubar=0,resizable=0,scrollbars=0,status=0,toolbar=0,height=300,width=300');
+
+        if (windowCadastrarTarefa.document.body.childNodes.length > 0) {
+          windowCadastrarTarefa.document.body.removeChild(windowCadastrarTarefa.document.body.childNodes[0]);
+        }
+
+        var form = document.createElement('form');
+        form.addEventListener('submit', function () {
+          var input = windowCadastrarTarefa.document.getElementById('titulo');
+          var titulo = input.value;
+          if (titulo == '') {
+            input.focus();
+          } else {
+            windowCadastrarTarefa.opener.tarefas.push({
+              id: windowCadastrarTarefa.opener.tarefas.length + 1,
+              titulo: titulo,
+              dataDeTermino: new Date(2021, 7, 14),
+              estahConcluida: false
+            });
+            windowCadastrarTarefa.opener.apresentarTarefas();
+            windowCadastrarTarefa.close();
+          }
+        });
+
+        var h1Header = document.createElement('h1');
+        h1Header.innerText = 'Cadastrar tarefa';
+        form.appendChild(h1Header);
+
+        form.appendChild(document.createElement('hr'));
+
+        var divTitulo = document.createElement('div');
+        var inputTitulo = document.createElement('input');
+        inputTitulo.setAttribute('id', 'titulo');
+        inputTitulo.setAttribute('name', 'titulo');
+        inputTitulo.setAttribute('type', 'text');
+        inputTitulo.setAttribute('placeholder', 'Título da tarefa');
+        inputTitulo.setAttribute('required', 'required');
+        divTitulo.appendChild(inputTitulo);
+        var divMensagem = document.createElement('div');
+        divMensagem.innerHTML = `
+        <strong style="color:red">
+          O título é de preenchimento obrigatório
+        </strong>
+        `;
+        divTitulo.appendChild(divMensagem);
+        form.appendChild(divTitulo);
+
+        form.appendChild(document.createElement('hr'));
+
+        var divButtonOk = document.createElement('div');
+        var buttonOk = document.createElement('button');
+        buttonOk.innerText = 'Salvar';
+        buttonOk.setAttribute('type', 'submit');
+        form.appendChild(buttonOk);
+
+        windowCadastrarTarefa.document.body.appendChild(form);
+        inputTitulo.focus();
+      }
+
+      /**
+       * Tratador do evento click do botão 'Cadastrar tarefa'.
+       */
+      function buttonCadastrarTarefaClick() {
+        createCadastrarTarefaWindow();
+      }
+
+      /**
        * Tratador do evento DOMContentLoaded para o document.
        */
       function documentLoad() {
         apresentarTarefas();
+        var buttonCadastrarTarefa = document.querySelector('#buttonCadastrarTarefa');
+        buttonCadastrarTarefa.addEventListener('click', buttonCadastrarTarefaClick);
       }
 
       /**
@@ -132,6 +241,7 @@
     <div id="app">
       <h1 id="title">Gerenciador de tarefas</h1>
       <h4 id="subtitle">Demonstração de recursos de manipulação do DOM com JavaScript</h4>
+      <button id="buttonCadastrarTarefa">Cadastrar tarefa</button>
       <hr>
       <table id="tableTarefas" border="1">
         <thead>
