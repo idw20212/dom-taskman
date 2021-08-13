@@ -38,7 +38,7 @@
         var ul = document.getElementById('ulTarefas');
         for (var tarefa of tarefas) {
           var li = document.createElement('li');
-          li.innerHTML = tarefa;
+          li.innerHTML = tarefa.titulo;
           ul.appendChild(li);
         }
       }
