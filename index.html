@@ -27,7 +27,7 @@
           id: 3,
           titulo: "Concluir tarefa de IDW",
           dataDeTermino: new Date(2021, 7, 30),
-          estahConcluida: false,
+          estahConcluida: true,
         },
       ];
 
@@ -38,7 +38,13 @@
         var ul = document.getElementById('ulTarefas');
         for (var tarefa of tarefas) {
           var li = document.createElement('li');
-          li.innerHTML = tarefa.titulo;
+          if (tarefa.estahConcluida) {
+            var strike = document.createElement('strike');
+            strike.innerHTML = tarefa.titulo;
+            li.appendChild(strike);
+          } else {
+            li.innerHTML = tarefa.titulo;
+          }
           ul.appendChild(li);
         }
       }
