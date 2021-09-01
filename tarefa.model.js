@@ -16,6 +16,12 @@ class Tarefa {
     this.estahConcluida = estahConcluida;
   }
 
+  static fromLocalStorage(tarefa) {
+    var nova = new Tarefa(tarefa.id, tarefa.titulo, tarefa.dataDeTermino, tarefa.estahConcluida);
+    nova.dataDeTermino = new Date(tarefa.dataDeTermino);
+    return nova;
+  }
+
   /**
    * Método que alterna o valor do atributo `estahConcluida`.
    */
