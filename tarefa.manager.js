@@ -99,8 +99,7 @@ class TarefaManager {
    * @param {Number} id 
    */
   excluir(id) {
-    var tarefa = this.encontrarTarefaPorId(id);
-    var i = this.tarefas.indexOf(tarefa);
+    var i = this.tarefas.findIndex(tarefa => tarefa.id == id);
     this.tarefas.splice(i, 1);
     this.salvarDados();
   }
