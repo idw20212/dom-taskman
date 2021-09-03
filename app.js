@@ -104,15 +104,16 @@ function buttonConcluirTarefaClick() {
  * - retorna elemento `button`.
  */
 function createButtonConcluir(tarefa) {
-  var btnConcluir = document.createElement('button');
+  var btn = document.createElement('button');
+  btn.classList.add('icon-button');
   if (tarefa.estahConcluida) {
-    btnConcluir.innerHTML = 'Desfazer concluir';
+    btn.innerHTML = '🔥';
   } else {
-    btnConcluir.innerHTML = 'Concluir';
+    btn.innerHTML = '✅';
   }
-  btnConcluir.setAttribute('data-tarefas-id', tarefa.id);
-  btnConcluir.addEventListener('click', buttonConcluirTarefaClick);
-  return btnConcluir;
+  btn.setAttribute('data-tarefas-id', tarefa.id);
+  btn.addEventListener('click', buttonConcluirTarefaClick);
+  return btn;
 }
 
 /**
@@ -136,7 +137,8 @@ function buttonExcluirTarefaClick() {
  */
 function createButtonExcluir(tarefa) {
   var btn = document.createElement('button');
-  btn.innerHTML = 'Excluir';
+  btn.classList.add('icon-button');
+  btn.innerHTML = '❌';
   btn.setAttribute('data-tarefas-id', tarefa.id);
   btn.addEventListener('click', buttonExcluirTarefaClick);
   return btn;
@@ -152,6 +154,7 @@ function buttonEditarTarefaClick() {
   header.innerHTML = `<strong>Editando tarefa (${editando.id})</strong>`;
   document.getElementById('titulo').value = editando.titulo;
   document.getElementById('dataDeTermino').value = formatarDataParaInput(editando.dataDeTermino);
+  mostrarSidebarForm();
 }
 
 /**
@@ -162,7 +165,8 @@ function buttonEditarTarefaClick() {
  */
 function createButtonEditar(tarefa) {
   var btn = document.createElement('button');
-  btn.innerHTML = 'Editar';
+  btn.classList.add('icon-button');
+  btn.innerHTML = '✍';
   if (tarefa.estahConcluida) {
     btn.setAttribute('disabled', 'disabled');
   }
@@ -181,6 +185,8 @@ function createButtonEditar(tarefa) {
  */
 function buttonCancelarFormClick() {
   var form = document.getElementById('form-tarefa');
+  alternarSidebarDireita();
+
   form.reset();
   if (editando != null) {
     var header = document.getElementById('form-header');
@@ -200,92 +206,79 @@ function createButtonCancelar() {
   btn.innerHTML = 'Cancelar';
   btn.setAttribute('type', 'button');
   btn.addEventListener('click', buttonCancelarFormClick);
-  return btn;  
+  return btn;
 }
 
 /**
- * Método que apresenta a lista das tarefas na forma de uma tabela.
+ * Alterna a visibilidade da sidebar da direita.
+ */
+function alternarSidebarDireita() {
+  document.getElementById('sidebar-estatisticas').classList.toggle('hidden');
+  document.getElementById('sidebar-form').classList.toggle('hidden');
+  var btnCadastrar = document.getElementById('btn-cadastrar');
+  btnCadastrar.innerHTML = document.getElementById('sidebar-estatisticas').classList.contains('hidden') ?
+    'Estatísticas' : 'Cadastrar';
+}
+
+/**
+ * Mostra a sidebar do formulário e oculta a sidebar das estatísticas.
+ */
+function mostrarSidebarForm() {
+  if (!document.getElementById('sidebar-estatisticas').classList.contains('hidden')) {
+    document.getElementById('sidebar-estatisticas').classList.add('hidden');
+  }
+  if (document.getElementById('sidebar-form').classList.contains('hidden')) {
+    document.getElementById('sidebar-form').classList.remove('hidden');
+  }
+  var btnCadastrar = document.getElementById('btn-cadastrar');
+  btnCadastrar.innerHTML = 'Estatísticas';
+}
+
+/**
+ * Método que apresenta a lista das tarefas ativas e tarefas concluídas.
  */
 function apresentarTarefas() {
-  var table = document.getElementById('tableTarefas');
-  var tbody = document.getElementById('tbodyTarefas');
-  if (tbody) {
-    tbody.remove();
-  }
-  tbody = document.createElement('tbody');
-  tbody.setAttribute('id', 'tbodyTarefas');
-  table.appendChild(tbody);
-  for (var tarefa of manager.tarefas.filter(tarefa => !tarefa.estahConcluida)) {
-    var tr = document.createElement('tr');
-    tr.setAttribute('id', `row-tarefas-${tarefa.id}`);
-    if (tarefa.estahConcluida) {
-      tr.style.backgroundColor = 'lightgreen';
-    }
-    var tdTitulo = document.createElement('td');
-    if (tarefa.estahConcluida) {
-      var stTitulo = document.createElement('strike');
-      stTitulo.innerHTML = tarefa.titulo;
-      tdTitulo.appendChild(stTitulo);
-    } else {
-      tdTitulo.innerHTML = tarefa.titulo;
-    }
-    var tdTermino = document.createElement('td');
+  var ulTarefasAtivas = document.getElementById('ul-tarefas-ativas');
+  document.querySelectorAll('#ul-tarefas-ativas li').forEach(no => no.remove());
+
+  var ulTarefasConcluidas = document.getElementById('ul-tarefas-concluidas');
+  document.querySelectorAll('#ul-tarefas-concluidas li').forEach(no => no.remove());
+
+  for (var tarefa of manager.tarefas) {
+    var li = document.createElement('li');
+    li.classList.add('lista__item');
+    var divLinha1 = document.createElement('div');
+
     var data = formatarData(tarefa.dataDeTermino);
-    var diff = diferencaDatas(tarefa.dataDeTermino, new Date());
-    tdTermino.innerHTML = `<center>
-    ${data}<br>
-    <small>${formatarDiferencaDatas(diff)}</small>
-    </center>`;
-    var tdConcluir = document.createElement('td');
+    var diff = formatarDiferencaDatas(diferencaDatas(tarefa.dataDeTermino, new Date()));
+    var small = document.createElement('small');
+    small.style.color = '#777';
+    small.innerHTML = `⏰ ${data} - ${diff}`;
+
+    var divTitulo = document.createElement('div')
+    divTitulo.innerHTML = tarefa.titulo;
+
+    divLinha1.appendChild(small);
+    divLinha1.appendChild(divTitulo);
+    li.appendChild(divLinha1);
+
+    var divLinha2 = document.createElement('div');
     btnConcluir = createButtonConcluir(tarefa);
     btnExcluir = createButtonExcluir(tarefa);
     btnEditar = createButtonEditar(tarefa);
-    tdConcluir.appendChild(btnConcluir);
-    tdConcluir.appendChild(btnExcluir);
-    tdConcluir.appendChild(btnEditar);
+    divLinha2.appendChild(btnConcluir);
+    divLinha2.appendChild(btnExcluir);
+    divLinha2.appendChild(btnEditar);
 
-    tr.appendChild(tdTitulo);
-    tr.appendChild(tdTermino);
-    tr.appendChild(tdConcluir);
-    tbody.appendChild(tr);
-  }
+    li.appendChild(divLinha2);
 
-  table = document.getElementById('tableTarefasConcluidas');
-  tbody = document.getElementById('tbodyTarefasConcluidas');
-  if (tbody) {
-    tbody.remove();
-  }
-  tbody = document.createElement('tbody');
-  tbody.setAttribute('id', 'tbodyTarefasConcluidas');
-  table.appendChild(tbody);
-  for (var tarefa of manager.tarefas.filter(tarefa => tarefa.estahConcluida)) {
-    var tr = document.createElement('tr');
-    tr.setAttribute('id', `row-tarefas-${tarefa.id}`);
     if (tarefa.estahConcluida) {
-      tr.style.backgroundColor = 'lightgreen';
+      ulTarefasConcluidas.appendChild(li);
+    } else {
+      ulTarefasAtivas.appendChild(li);
     }
-    var tdTitulo = document.createElement('td');
-    tdTitulo.innerHTML = tarefa.titulo;
+  }
 
-    var tdTermino = document.createElement('td');
-    var data = formatarData(tarefa.dataDeTermino);
-    var diff = diferencaDatas(tarefa.dataDeTermino, new Date());
-    tdTermino.innerHTML = `<center>
-    ${data}<br>
-    <small>${formatarDiferencaDatas(diff)}</small>
-    </center>`;
-    var tdConcluir = document.createElement('td');
-    btnConcluir = createButtonConcluir(tarefa);
-    btnExcluir = createButtonExcluir(tarefa);
-    
-    tdConcluir.appendChild(btnConcluir);
-    tdConcluir.appendChild(btnExcluir);
-    
-    tr.appendChild(tdTitulo);
-    tr.appendChild(tdTermino);
-    tr.appendChild(tdConcluir);
-    tbody.appendChild(tr);
-  }  
 }
 
 /**
@@ -308,204 +301,29 @@ function formSubmit(e) {
       manager.editar(editando.id, titulo, new Date(data), editando.estahConcluida);
       editando = null;
     }
+    alternarSidebarDireita();
     this.reset();
     apresentarTarefas();
   }
 }
 
-/**
- * Cria a estrutura do formulário, contendo:
- * 
- * * campo de título
- * * campo para data e hora de término
- * 
- * @returns {Element} O elemento que representa o formulário.
- */
-function createForm() {
-  var form = document.createElement('form');
-  form.setAttribute('id', 'form-tarefa');
-  form.addEventListener('submit', formSubmit);
-
-  form.appendChild(document.createElement('hr'));
-
-  var header = document.createElement('div');
-  header.setAttribute('id', 'form-header');
-  header.innerHTML = '<strong>Cadastrar tarefa</strong>';
-  form.appendChild(header);
-
-  form.appendChild(document.createElement('br'));
-
-  var divTitulo = document.createElement('div');
-  var inputTitulo = document.createElement('input');
-  inputTitulo.setAttribute('id', 'titulo');
-  inputTitulo.setAttribute('name', 'titulo');
-  inputTitulo.setAttribute('type', 'text');
-  inputTitulo.setAttribute('placeholder', 'Título da tarefa');
-  inputTitulo.setAttribute('required', 'required');
-  divTitulo.appendChild(inputTitulo);
-  var divMensagem = document.createElement('div');
-  divMensagem.innerHTML = `
-         <strong style="color:red">
-           O título é de preenchimento obrigatório
-         </strong>
-         `;
-  divTitulo.appendChild(divMensagem);
-  form.appendChild(divTitulo);
-
-  var divData = document.createElement('div');
-  var inputData = document.createElement('input');
-  inputData.setAttribute('id', 'dataDeTermino');
-  inputData.setAttribute('name', 'dataDeTermino');
-  inputData.setAttribute('type', 'datetime-local');
-  inputData.setAttribute('required', 'required');
-  divData.appendChild(inputData);
-  var divMensagemData = document.createElement('div');
-  divMensagemData.innerHTML = `
-         <strong style="color:red">
-           A data é de preenchimento obrigatório
-         </strong>
-         `;
-  divData.appendChild(divMensagemData);
-  form.appendChild(divData);
-  form.appendChild(document.createElement('br'));
-
-  var divButtons = document.createElement('div');
-  var buttonOk = document.createElement('button');
-  buttonOk.innerText = 'Salvar';
-  buttonOk.setAttribute('type', 'submit');
-  divButtons.appendChild(buttonOk);
-  divButtons.appendChild(document.createTextNode(' '));
-  var buttonCancelar = createButtonCancelar();
-  divButtons.appendChild(buttonCancelar);
-
-  form.appendChild(divButtons);
-
-  return form;
-}
-
-/**
- * Cria a estrutura da tabela, contendo um cabeçalho com
- * as colunas:
- * 
- * * tarefa (título)
- * * data de término
- * * ações (para os botões de ação concluir, excluir e editar tarefa)
- * @returns {Element}
- */
-function createTableTarefasCadastradas() {
-  var container = document.createElement('div');
-
-  var header = document.createElement('div');
-  header.innerHTML = '<strong>Tarefas cadastradas</strong>';
-  container.appendChild(header);
-  container.appendChild(document.createElement('br'));
-
-  var tableTarefas = document.createElement('table');
-  tableTarefas.setAttribute('id', 'tableTarefas');
-  tableTarefas.setAttribute('border', 1);
-  tableTarefas.setAttribute('width', '100%');
-  container.appendChild(tableTarefas);
-
-  var thead = document.createElement('thead');
-
-  var tr = document.createElement('tr');
-
-  var thTitulo = document.createElement('th');
-  thTitulo.setAttribute('width', '45%')
-  thTitulo.innerHTML = 'Tarefa';
-  tr.appendChild(thTitulo);
-
-  var thDataDeTermino = document.createElement('th');
-  thDataDeTermino.innerHTML = 'Data de término';
-  thDataDeTermino.setAttribute('width', '20%')
-  tr.appendChild(thDataDeTermino);
-
-  var thAcoes = document.createElement('th');
-  thAcoes.innerHTML = 'Ações';
-  thAcoes.setAttribute('width', '35%')
-  tr.appendChild(thAcoes);
-
-  thead.appendChild(tr);
-  tableTarefas.appendChild(thead);
-
-  var tbody = document.createElement('tbody');
-  tbody.setAttribute('id', 'tbodyTarefas');
-  tableTarefas.appendChild(tbody);
-
-  return container;
-}
-
-function createTableTarefasConcluidas() {
-  var container = document.createElement('div');
-
-  var header = document.createElement('div');
-  header.innerHTML = '<strong>Tarefas concluídas</strong>';
-  container.appendChild(header);
-  container.appendChild(document.createElement('br'));
-
-  var tableTarefas = document.createElement('table');
-  tableTarefas.setAttribute('id', 'tableTarefasConcluidas');
-  tableTarefas.setAttribute('border', 1);
-  tableTarefas.setAttribute('width', '100%');
-  container.appendChild(tableTarefas);
-
-  var thead = document.createElement('thead');
-
-  var tr = document.createElement('tr');
-
-  var thTitulo = document.createElement('th');
-  thTitulo.setAttribute('width', '45%')
-  thTitulo.innerHTML = 'Tarefa';
-  tr.appendChild(thTitulo);
-
-  var thDataDeTermino = document.createElement('th');
-  thDataDeTermino.innerHTML = 'Data de término';
-  thDataDeTermino.setAttribute('width', '20%')
-  tr.appendChild(thDataDeTermino);
-
-  var thAcoes = document.createElement('th');
-  thAcoes.innerHTML = 'Ações';
-  thAcoes.setAttribute('width', '35%')
-  tr.appendChild(thAcoes);
-
-  thead.appendChild(tr);
-  tableTarefas.appendChild(thead);
-
-  var tbody = document.createElement('tbody');
-  tbody.setAttribute('id', 'tbodyTarefasConcluidas');
-  tableTarefas.appendChild(tbody);
-
-  return container;
-}
 
 /**
  * Método que cria a interface do app.
  */
 function createApp() {
   manager = new TarefaManager();
-  var app = document.getElementById('app');
 
-  var hTitle = document.createElement('h1');
-  hTitle.innerHTML = 'Gerenciador de tarefas';
-  app.appendChild(hTitle);
+  var btnCadastrar = document.getElementById('btn-cadastrar');
+  btnCadastrar.addEventListener('click', function () {
+    alternarSidebarDireita();
+  })
 
-  var hSubtitle = document.createElement('h4');
-  hSubtitle.innerHTML = 'Demonstração de recursos de manipulação do DOM com JavaScript';
-  app.appendChild(hSubtitle);
+  var form = document.getElementById('form-tarefa')
+  form.addEventListener('submit', formSubmit);
 
-  form = createForm();
-  app.appendChild(form);
-
-  app.appendChild(document.createElement('hr'));
-  app.appendChild(document.createElement('br'));
-
-  var tableTarefas = createTableTarefasCadastradas();
-  app.appendChild(tableTarefas);
-
-  app.appendChild(document.createElement('br')); 
-
-  var tableTarefasConcluidas = createTableTarefasConcluidas();
-  app.appendChild(tableTarefasConcluidas);
+  var btnCancelar = document.getElementById('btn-cancelar');
+  btnCancelar.addEventListener('click', buttonCancelarFormClick);
 }
 
 /**

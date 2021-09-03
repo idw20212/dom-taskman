@@ -1,0 +1,170 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Lato", sans-serif;
+}
+
+.main-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+header.main-header {
+  position: sticky;
+  top: 0;
+  height: 60px;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand .title {
+  font-size: x-large;
+  font-weight: 600;
+}
+
+.brand small {
+  opacity: 0.7;
+}
+
+footer {
+  height: 60px;
+}
+
+.content-container {
+  height: calc(100vh - 60px);
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #eee;
+  position: fixed;
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-left {
+  top: 60px;
+  left: 0;
+}
+
+.sidebar header {
+  padding: 10px;
+  font-size: large;
+  font-weight: bold;
+}
+
+.sidebar .sidebar-content {
+  flex-grow: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.sidebar footer {
+  height: auto;
+  padding: 10px;
+}
+
+.sidebar-left footer {
+  background-color: lightgray;
+}
+
+.sidebar-right {
+  top: 60px;
+  right: 0;
+}
+
+.sidebar-right footer {
+  color: #555;
+}
+
+.content {
+  flex-grow: 1;
+  margin-left: calc(250px + 20px);
+  margin-right: calc(250px + 20px);
+}
+
+button {
+  border-radius: 5px;
+  border: 1px solid gray;
+  border-bottom: 3px solid gray;
+  padding: 7px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sidebar.hidden {
+  display: none;
+}
+
+form label {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  display: block;
+}
+
+form .form-row {
+  margin-bottom: 20px;
+}
+
+#div-tarefas-ativas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lista {
+  list-style-type: none;
+  padding: 0px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.lista__item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.lista__item:first-child {
+  border-top: initial;
+}
+
+
+.icon-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: initial;
+  background-color: inherit;
+  text-align: center;
+}
+
+.icon-button:hover {
+  background-color: #eee;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0px;
+}
