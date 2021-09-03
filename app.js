@@ -263,6 +263,7 @@ function apresentarTarefas() {
     li.appendChild(divLinha1);
 
     var divLinha2 = document.createElement('div');
+    divLinha2.classList.add('button-group');
     btnConcluir = createButtonConcluir(tarefa);
     btnExcluir = createButtonExcluir(tarefa);
     btnEditar = createButtonEditar(tarefa);
